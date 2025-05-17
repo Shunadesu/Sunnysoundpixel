@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +47,26 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.app {
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.background-image {
+  background-color: transparent !important;
+  position: relative;
+}
+
+/* Đảm bảo các thành phần khác hiển thị trên hình nền */
+.clock,
+.audio-player,
+.background-controls {
+  /* position: relative; */
+  z-index: 1;
 }

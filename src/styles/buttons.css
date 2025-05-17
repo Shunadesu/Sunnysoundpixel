@@ -1,0 +1,83 @@
+.pixel-button {
+  position: relative;
+  padding: 10px 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #fff;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  box-shadow: 
+    4px 4px 0 #2c5282,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+  text-shadow: 2px 2px 0 #2c5282;
+  transform: translate(0, 0);
+}
+
+.pixel-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 
+    6px 6px 0 #2c5282,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+}
+
+.pixel-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 
+    2px 2px 0 #2c5282,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+}
+
+.pixel-button.active {
+  background: #1a365d;
+  box-shadow: 
+    4px 4px 0 #1a365d,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+  text-shadow: 2px 2px 0 #1a365d;
+}
+
+.pixel-button.play-button {
+  background: transparent;
+  box-shadow: 
+    4px 4px 0 #1a365d,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+  text-shadow: 2px 2px 0 #1a365d;
+}
+
+.pixel-button.play-button:hover {
+  box-shadow: 
+    6px 6px 0 #1a365d,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+}
+
+.pixel-button.play-button:active {
+  box-shadow: 
+    2px 2px 0 #1a365d,
+    inset -2px -2px 0 rgba(0,0,0,0.2);
+}
+
+/* Color picker styling */
+.color-picker {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 4px solid #4a90e2;
+  border-radius: 4px;
+  cursor: pointer;
+  background: none;
+  box-shadow: 4px 4px 0 #2c5282;
+}
+
+.color-picker:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #2c5282;
+}
+
+.color-picker:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #2c5282;
+} 

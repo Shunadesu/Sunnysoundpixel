@@ -1,0 +1,66 @@
+.background-controls {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 12px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.0);
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 101;
+}
+
+.background-controls .pixel-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9em;
+  padding: 7px 14px;
+  border: 2px solid #2c5282;
+  background: transparent;
+  color: #fff;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #2c5282;
+  transition: all 0.1s;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0 2px;
+}
+.background-controls .pixel-button.active, .background-controls .pixel-button:active {
+  background: #2c5282;
+  color: #fff;
+  box-shadow: 1px 1px 0 #1a365d;
+}
+.background-controls .pixel-button:hover {
+  background: #6cb6ff;
+  color: #2c5282;
+}
+
+.background-controls .gallery-button {
+  min-width: 90px;
+}
+
+.background-controls .color-picker {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #2c5282;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 #2c5282;
+  background: #e0e7ef;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+  .background-controls {
+    bottom: 8px;
+    left: 8px;
+    gap: 6px;
+  }
+  .background-controls .pixel-button {
+    font-size: 0.7em;
+    padding: 5px 8px;
+  }
+} 
