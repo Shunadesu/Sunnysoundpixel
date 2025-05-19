@@ -8,7 +8,7 @@ const songs = [
     url: require('../sound/lovelywinter.mp3'),
   },
   {
-    title: 'Guitar',
+    title: 'Guitar', 
     url: require('../sound/guitar.mp3'),
   },
   {
@@ -58,9 +58,10 @@ const AudioPlayer = () => {
   };
 
   const handleEnded = () => {
-    setCurrentSong((prev) => (prev + 1) % songs.length);
+    // Instead of moving to next song, replay the current song
+    audioRef.current.currentTime = 0;
+    audioRef.current.play();
     setCurrentTime(0);
-    setIsPlaying(true);
   };
 
   const handleSeek = (e) => {
@@ -88,6 +89,7 @@ const AudioPlayer = () => {
         ref={audioRef}
         src={songs[currentSong].url}
         autoPlay
+        loop
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleEnded}
