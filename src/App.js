@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePalette } from 'color-thief-react';
 import './App.css';
 import AudioPlayer from './components/AudioPlayer';
 import Clock from './components/Clock';
@@ -25,13 +26,32 @@ const backgrounds = [
 
 function App() {
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  const [surroundColor, setSurroundColor] = useState('#000000');
   const [useBackgroundImage, setUseBackgroundImage] = useState(true);
   const [currentBackgroundIndex, setCurrentBackgroundIndex] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState(null);
 
-  const handleColorChange = (color) => {
-    setBackgroundColor(color);
-    setUseBackgroundImage(false);
+  const currentBackground = backgrounds[currentBackgroundIndex];
+  
+  // Get dominant color from current background image
+  const { data: palette } = usePalette(currentBackground.url, 5, 'hex', {
+    crossOrigin: 'anonymous',
+    quality: 10,
+  });
+
+  // Update surround color when palette or background changes
+  useEffect(() => {
+    if (palette && palette.length > 0) {
+      setSurroundColor(palette[0]);
+    }
+  }, [palette, currentBackgroundIndex]);
+
+  const handleModeChange = (mode) => {
+    setCurrentTheme(mode.theme);
+    if (mode.theme.background) {
+      setSurroundColor(mode.theme.background);
+    }
   };
 
   const handleToggleImage = () => {
@@ -60,45 +80,70 @@ function App() {
     setShowGallery(false);
   };
 
-  const currentBackground = backgrounds[currentBackgroundIndex];
+  const handleSurroundColorChange = (newColor) => {
+    setSurroundColor(newColor);
+  };
 
   const backgroundStyle = useBackgroundImage ? {
     backgroundImage: `url(${currentBackground.url})`,
     backgroundSize: 'contain',
-    backgroundPosition: 'contain',
+    backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    backgroundColor: 'transparent'
+    backgroundColor: surroundColor,
+    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+    filter: currentTheme?.filter || 'none',
   } : {
     backgroundColor: backgroundColor,
-    backgroundImage: 'none'
+    backgroundImage: 'none',
+    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
   };
 
   return (
-    <div
-      className={`app ${useBackgroundImage ? 'background-image' : ''}`}
-      style={backgroundStyle}
-    >
-      <TopLeftWidgets />
-      <Clock />
-      <AudioPlayer />
-      <BackgroundControls
-        onColorChange={handleColorChange}
-        onToggleImage={handleToggleImage}
-        onNextBackground={handleNextBackground}
-        onPreviousBackground={handlePreviousBackground}
-        onOpenGallery={() => setShowGallery(true)}
-        currentBackground={currentBackground}
-      />
-      {showGallery && (
-        <BackgroundGallery
-          backgrounds={backgrounds}
-          currentBackground={currentBackground}
-          onSelect={handleSelectBackground}
-          onClose={() => setShowGallery(false)}
+    <>
+      {currentTheme?.overlay && (
+        <div
+          className="theme-overlay"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: currentTheme.overlay,
+            pointerEvents: 'none',
+            zIndex: 1
+          }}
         />
       )}
-    </div>
+      <div
+        className={`app ${useBackgroundImage ? 'background-image' : ''}`}
+        style={backgroundStyle}
+      >
+        <TopLeftWidgets onModeChange={handleModeChange} />
+        <Clock />
+        <AudioPlayer />
+        <BackgroundControls
+          onToggleImage={handleToggleImage}
+          onNextBackground={handleNextBackground}
+          onPreviousBackground={handlePreviousBackground}
+          onOpenGallery={() => setShowGallery(true)}
+          onSurroundColorChange={handleSurroundColorChange}
+          currentBackground={currentBackground}
+          surroundColor={surroundColor}
+          useBackgroundImage={useBackgroundImage}
+          palette={palette}
+        />
+        {showGallery && (
+          <BackgroundGallery
+            backgrounds={backgrounds}
+            currentBackground={currentBackground}
+            onSelect={handleSelectBackground}
+            onClose={() => setShowGallery(false)}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
-export default App;
+export default App; 

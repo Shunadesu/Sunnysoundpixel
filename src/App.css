@@ -9,64 +9,48 @@
 body {
   font-family: 'Press Start 2P', cursive;
 }
-
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.app {
-  min-height: 100vh;
-  transition: all 0.3s ease;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   position: relative;
+  z-index: 2;
 }
 
 .background-image {
-  background-color: transparent !important;
-  position: relative;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* Đảm bảo các thành phần khác hiển thị trên hình nền */
-.clock,
-.audio-player,
-.background-controls {
-  /* position: relative; */
+/* Theme transitions */
+.app, .theme-overlay {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Lo-fi grain effect */
+.app.lofi-mode::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANxM8mAAAACHRSTlMzMzMzMzMzM85JBgUAAAA1SURBVDjLY2CgNhg1waiJUROsNUD6DwPxYAKMwsKHghhEQ0uwmqCthz9qYtTEqIlRE8PPBAD5Wx4uqGDyQwAAAABJRU5ErkJggg==");
+  opacity: 0.05;
+  pointer-events: none;
   z-index: 1;
 }
+
+/* Night mode star twinkle */
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.night-mode .tsparticles-canvas-el {
+  animation: twinkle 2s infinite;
+} 

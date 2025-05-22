@@ -3,19 +3,43 @@ import './TopLeftWidgets.css';
 import '../styles/buttons.css';
 
 const MODES = [
-  { label: 'Chill Mode', icon: '🎧' },
-  { label: 'Night Mode', icon: '🌙' },
-  { label: 'Lo-fi Mode', icon: '🎵' },
+  { 
+    label: 'Rain Mode', 
+    icon: '🌧️',
+    theme: {
+      background: '#3a5a78',
+      overlay: 'linear-gradient(180deg, rgba(58,90,120,0.2) 0%, rgba(58,90,120,0.4) 100%)',
+    }
+  },
+  { 
+    label: 'Night Mode', 
+    icon: '🌙',
+    theme: {
+      background: '#0a192f',
+      overlay: 'radial-gradient(circle, rgba(10,25,47,0.8) 0%, rgba(10,25,47,0.95) 100%)',
+    }
+  },
+  { 
+    label: 'Lo-fi Mode', 
+    icon: '🎵',
+    theme: {
+      background: '#e6d5ac',
+      overlay: 'linear-gradient(0deg, rgba(183,156,128,0.3) 0%, rgba(183,156,128,0.1) 100%)',
+    }
+  },
 ];
 
-const EVENTS = [
-  { date: '2025-05-20', name: 'Release v2.0' },
-  { date: '2025-06-01', name: 'Summer Chill Event' },
-];
-
-const TopLeftWidgets = () => {
+const TopLeftWidgets = ({ onModeChange }) => {
   const [modeIndex, setModeIndex] = useState(0);
-  const [showSettings, setShowSettings] = useState(false);
+  const currentMode = MODES[modeIndex];
+
+  const handleModeChange = () => {
+    const newIndex = (modeIndex + 1) % MODES.length;
+    setModeIndex(newIndex);
+    if (onModeChange) {
+      onModeChange(MODES[newIndex]);
+    }
+  };
 
   // Weather mock data
   const weather = {
@@ -24,57 +48,40 @@ const TopLeftWidgets = () => {
     city: 'HCM City',
   };
 
-  // Get next event
-  const today = new Date();
-  const nextEvent = EVENTS.find(e => new Date(e.date) >= today);
-
   return (
-    <div className="top-left-widgets">
-      {/* Mode/Status */}
-      <div className="widget mode-widget">
-        <span className="mode-icon">{MODES[modeIndex].icon}</span>
-        <span className="mode-label">{MODES[modeIndex].label}</span>
-        <button
-          className="pixel-button mode-switch"
-          title="Switch mode"
-          onClick={() => setModeIndex((modeIndex + 1) % MODES.length)}
-        >
-          ⇄
-        </button>
-      </div>
-
-      {/* Settings Button */}
-      {/* <button
-        className="pixel-button settings-btn"
-        title="Settings"
-        onClick={() => setShowSettings(!showSettings)}
-      >
-        ⚙️
-      </button>
-      {showSettings && (
-        <div className="widget settings-menu">
-          <div className="settings-title">Settings</div>
-          <div className="settings-item">(Coming soon...)</div>
+    <>
+      {currentMode.label === 'Rain Mode' && (
+        <div className="rain-container" data-mode={currentMode.label}>
+          {[...Array(30)].map((_, i) => (
+            <div key={i} className="rain" style={{
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${0.7 + Math.random() * 0.3}s`,
+              animationDelay: `${Math.random() * 2}s`
+            }} />
+          ))}
         </div>
-      )} */}
+      )}
 
-      {/* Weather Widget */}
-      <div className="widget weather-widget">
-        <span className="weather-icon">{weather.icon}</span>
-        <span className="weather-temp">{weather.temp}</span>
-        <span className="weather-city">{weather.city}</span>
+      <div className="top-left-widgets" data-mode={currentMode.label}>
+        <div className="widget mode-widget">
+          <span className="mode-icon">{currentMode.icon}</span>
+          <span className="mode-label">{currentMode.label}</span>
+          <button
+            className="pixel-button mode-switch"
+            title="Switch mode"
+            onClick={handleModeChange}
+          >
+            ⇄
+          </button>
+        </div>
+
+        <div className="widget weather-widget">
+          <span className="weather-icon">{weather.icon}</span>
+          <span className="weather-temp">{weather.temp}</span>
+          <span className="weather-city">{weather.city}</span>
+        </div>
       </div>
-
-      {/* Event Widget */}
-      {/* <div className="widget event-widget">
-        <span className="event-title">Next Event:</span>
-        {nextEvent ? (
-          <span className="event-detail">{nextEvent.name} ({nextEvent.date})</span>
-        ) : (
-          <span className="event-detail">No upcoming events</span>
-        )}
-      </div> */}
-    </div>
+    </>
   );
 };
 

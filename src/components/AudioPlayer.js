@@ -15,6 +15,14 @@ const songs = [
     title: 'Sound 1',
     url: require('../sound/sound1.mp3'),
   },
+  {
+    title: 'Relaxing',
+    url: require('../sound/relaxing.mp3'),
+  },
+  {
+    title: 'Daylight',
+    url: require('../sound/daylight.mp3'),
+  }
 ];
 
 function formatTime(sec) {
@@ -27,13 +35,24 @@ function formatTime(sec) {
 const AudioPlayer = () => {
   const audioRef = useRef(null);
   const [currentSong, setCurrentSong] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load();
+    }
+  }, [currentSong]);
+
+  useEffect(() => {
     if (isPlaying) {
-      audioRef.current.play();
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Playback failed:", error);
+        });
+      }
     } else {
       audioRef.current.pause();
     }
@@ -43,25 +62,26 @@ const AudioPlayer = () => {
     setIsPlaying((prev) => !prev);
   };
 
-  const handleSongChange = (index) => {
-    setCurrentSong(index);
-    setCurrentTime(0);
-    setIsPlaying(true);
+  const handleSongChange = (e) => {
+    const index = parseInt(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      setCurrentSong(index);
+      setCurrentTime(0);
+      setIsPlaying(true);
+    }
   };
 
   const handleTimeUpdate = () => {
     setCurrentTime(audioRef.current.currentTime);
+    if (audioRef.current.duration > 0 && 
+        audioRef.current.currentTime >= audioRef.current.duration - 0.1) {
+      audioRef.current.currentTime = 0;
+    }
   };
 
   const handleLoadedMetadata = () => {
     setDuration(audioRef.current.duration);
-  };
-
-  const handleEnded = () => {
-    // Instead of moving to next song, replay the current song
-    audioRef.current.currentTime = 0;
-    audioRef.current.play();
-    setCurrentTime(0);
   };
 
   const handleSeek = (e) => {
@@ -75,39 +95,53 @@ const AudioPlayer = () => {
 
   return (
     <div className="audio-player">
-      <div className="audio-progress-bar-container">
-        <span className="audio-time audio-time-current">{formatTime(currentTime)}</span>
-        <div className="audio-progress-bar" onClick={handleSeek}>
-          <div
-            className="audio-progress-bar-fill"
-            style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }}
-          />
-        </div>
-        <span className="audio-time audio-time-duration">{formatTime(duration)}</span>
+      <div className="song-list">
+        <select 
+          value={currentSong}
+          onChange={handleSongChange}
+          className="pixel-button song-select"
+        >
+          {songs.map((song, idx) => (
+            <option 
+              key={song.title} 
+              value={idx}
+              style={{
+                backgroundColor: '#34495e',
+                color: '#fff',
+                padding: '8px'
+              }}
+            >
+              {song.title}
+            </option>
+          ))}
+        </select>
+        
+        {/* {currentSong !== null && (
+          <div className="song-controls">
+            <div className="audio-progress-bar" onClick={handleSeek}>
+              <div
+                className="audio-progress-bar-fill"
+                style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }}
+              />
+            </div>
+            <div className="time-display">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+            <button className="pixel-button play-button" onClick={handlePlayPause}>
+              {isPlaying ? '❚❚' : '►'}
+            </button>
+          </div>
+        )} */}
       </div>
       <audio
         ref={audioRef}
         src={songs[currentSong].url}
-        autoPlay
+        preload="auto"
         loop
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleEnded}
       />
-      <div className="audio-controls">
-        <button className="pixel-button play-button" onClick={handlePlayPause}>
-          {isPlaying ? '❚❚' : '►'}
-        </button>
-        {songs.map((song, idx) => (
-          <button
-            key={song.title}
-            className={`pixel-button song-button${currentSong === idx ? ' active' : ''}`}
-            onClick={() => handleSongChange(idx)}
-          >
-            {song.title}
-          </button>
-        ))}
-      </div>
     </div>
   );
 };
